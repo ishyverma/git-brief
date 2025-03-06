@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id       String @id @default(uuid())
+    userId   String @unique
+    email    String @unique
+    fullName String
+    repos    Repo[]
+}
+
+model Repo {
+    id          String   @id @default(uuid())
+    name        String
+    userId      String
+    user        User     @relation(fields: [userId], references: [userId])
+    githubUrl   String
+    githubToken String?
+    commits     Commit[]
+}
+
+model Commit {
+    id           String   @id @default(uuid())
+    repoId       String
+    repo         Repo     @relation(fields: [repoId], references: [id])
+    message      String
+    commiter     String
+    commitedDate DateTime
+    summary      String
+    avatarUrl    String
+}
