@@ -33,7 +33,6 @@ export async function commitLoader(githubUrl: string) {
       commitSha: commit.sha,
     };
   });
-  console.log(data.length)
   return someCommits;
 }
 
@@ -91,6 +90,7 @@ export async function createSummary(commit: generateSummaryProps) {
     - Do not include unchanged lines.  
     - Do not generate unnecessary explanations.
     - Do not add any other line of you explaining what you will do just make the summary.
+    - It should not be max then 4 lines
     
     Commit Message:
     ${commit?.commitMessage}

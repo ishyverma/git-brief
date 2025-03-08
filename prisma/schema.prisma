@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
     provider = "prisma-client-js"
 }
@@ -19,13 +16,25 @@ model User {
 }
 
 model Repo {
-    id          String   @id @default(uuid())
-    name        String
-    userId      String
-    user        User     @relation(fields: [userId], references: [userId])
-    githubUrl   String
-    githubToken String?
-    commits     Commit[]
+    id                String        @id @default(uuid())
+    name              String
+    userId            String
+    user              User          @relation(fields: [userId], references: [userId])
+    githubUrl         String
+    githubToken       String?
+    repoName          String
+    repoImage         String
+    stars             Int
+    forkCount         Int
+    description       String
+    totalPrs          Int
+    totalMergedPrs    Int
+    totalCommits      Int
+    totalContributors Int
+    commits           Commit[]
+    languages         Language[]
+    contributors      Contributor[]
+    dependencies      Dependency[]
 }
 
 model Commit {
@@ -37,4 +46,31 @@ model Commit {
     commitedDate DateTime
     summary      String
     avatarUrl    String
+    commitSha    String
+}
+
+model Language {
+    id            String @id @default(uuid())
+    repoId        String
+    repo          Repo   @relation(fields: [repoId], references: [id])
+    name          String
+    color         String
+    numberOfLines Int
+}
+
+model Contributor {
+    id            String @id @default(uuid())
+    name          String
+    avatarUrl     String
+    contributions Int
+    repoId        String
+    repo          Repo   @relation(fields: [repoId], references: [id])
+}
+
+model Dependency {
+    id  String  @id @default(uuid())
+    name    String
+    version String
+    repoId  String
+    repo    Repo    @relation(fields: [repoId], references: [id])
 }

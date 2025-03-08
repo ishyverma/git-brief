@@ -24,7 +24,7 @@ const DashboardLayout = async ({ children }: Props) => {
   return (
     <SidebarProvider>
         <AppSidebar info={info} />
-        <main>
+        <main className='w-full'>
             {children}
         </main>
         <Toaster />

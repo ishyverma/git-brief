@@ -15,7 +15,6 @@ const formSchema = z.object({
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -32,8 +31,7 @@ import {
   DialogTrigger,
 } from "components/motion-primitives/dialog";
 import { Button } from "../ui/button";
-import { Loader, Loader2, Plus } from "lucide-react";
-import { Label } from "../ui/label";
+import { Loader2, Plus } from "lucide-react";
 import { Input } from "../ui/input";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
@@ -77,9 +75,7 @@ function CreateButton({ id }: Props) {
   return (
     <Dialog>
       <DialogTrigger>
-        <Button className="mt-2" variant="outline" size="sm">
-          <Plus /> Create
-        </Button>
+        <Plus /> Create
       </DialogTrigger>
       <DialogContent className="w-full max-w-md bg-white p-6 dark:bg-zinc-900">
         <DialogHeader>
