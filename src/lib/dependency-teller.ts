@@ -4,39 +4,42 @@ import { octokit } from "./github-repo-loader";
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY!);
 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-export const getPackageFile = async (owner: string, repo: string): Promise<string> => {
-    const packages = await octokit.rest.repos.getContent({
-        owner,
-        repo,
-        path: 'package.json'
-    })
+export const getPackageFile = async (
+  owner: string,
+  repo: string,
+): Promise<string> => {
+  const packages = await octokit.rest.repos.getContent({
+    owner,
+    repo,
+    path: "package.json",
+  });
 
-    if (!("content" in packages.data)) {
-        return ""
-    }
+  if (!("content" in packages.data)) {
+    return "";
+  }
 
-    const data = Buffer.from(packages.data.content, "base64").toString("utf-8")
-    return data
-}
+  const data = Buffer.from(packages.data.content, "base64").toString("utf-8");
+  return data;
+};
 
-export const dependencyTeller = async (dependencies: string): Promise<string> => {
-    const result = await model.generateContent(`
-        I have a package.json file that contains dependencies and devDependencies for a project. 
-        I want to extract only the most essential dependencies required for the project to function, excluding optional or less critical ones.
-        You have to give only top 5 dependencies that are being used in the project. 
-        Return them as an array of arrays, where each inner array contains the dependency name and its version. 
-        The response from you should be a string as given in the example below.
-        The dependencies that you should contain should have the main language of the project.
-        The framework that they are using, the orm they are using.
-        Or If they are using any monorepo or monorepo orchestrator you should consider it.
-        Not take one dependency many time.
-        For e.g -> If we are choosing prisma then prisma/client should not be selected same names should not get selected.
-        Do not include any additional text or formatting. Only return the raw array. Example format: "["['react', '18.3.1']", "['next', '15.0.1']"]"
-        The file is:
-        # CONTEXT STARTS HERE
-        ${dependencies}
-        #CONTEXT ENDS HERE
-    `)
+export const dependencyTeller = async (
+  dependencies: string,
+): Promise<string> => {
+  const result = await model.generateContent(`
+        Give me a JSON stringified array that can be easily parsed into a JavaScript array. The array should contain dependencies in the form of nested arrays, where each inner array consists of exactly two values: the dependency name (as a string) and its version (also as a string). Ensure the output is properly formatted so that JSON.parse(output) in JavaScript returns a valid array structure. Example format: '[[\"dependency1\", \"1.0.0\"], [\"dependency2\", \"2.3.4\"]]'."
+        Just give me the top 5 dependencies which should cover the frotend framework, backend framework or any full stack framework.
+        Should have an ORM or an database.
+        Should have monorepo if have.
+        If it is having an dependency that oou have choosen then no othere dependency should contains that dependency in other dependencies.
+        This should ensure you get a properly formatted JSON string that can be parsed easily.
 
-    return result.response.text()
-}
+        ## **Package File:**    +
+
+        CONTEXT STARTS HERE     +
+        ${dependencies}     +
+        CONTEXT ENDS HERE   +
+    `);
+
+    const cleanedResponse = result.response.text().trim().replace(/^```json\s*/, "").replace(/\s*```$/, "");;
+  return cleanedResponse;
+};

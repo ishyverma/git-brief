@@ -11,6 +11,11 @@ const getColors = async (owner: string, name: string): Promise<getColorsResponse
 
   const languageReponse = await axios.get(
     `https://api.github.com/repos/${owner}/${name}/languages`,
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`
+      }
+    }
   );
   const languageReponseData = languageReponse.data;
 

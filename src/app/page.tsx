@@ -1,8 +1,8 @@
-import { registerUser } from "@/lib/register-user"
+import { redirect } from "next/navigation"
 
 export default async function Home() {
-  const user = await registerUser()
+  redirect("/dashboard")
   return <div>
-    {JSON.stringify(user)}
+    GIT BRIEF
   </div>
 }

@@ -97,6 +97,7 @@ async function getMergedPRs(owner: string, repo: string): Promise<number> {
             if (!prs.length) break;
     
             for (const pr of prs) {
+                console.log(process.env.NEXT_PUBLIC_GITHUB_TOKEN);
                 const mergeResponse = await axios.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pr.number}/merge`, {
                     headers: {
                         Authorization: `Bearer ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`
@@ -109,6 +110,7 @@ async function getMergedPRs(owner: string, repo: string): Promise<number> {
             page++;
         } catch (error) {
             console.log("GET_MERGED_PR", (error as AxiosError).response?.data)
+            break
         }  
     }
 
@@ -134,5 +136,3 @@ export const getRepoStats = async (owner: string, repo: string): Promise<getRepo
         merged
     }
 }
-
-await getContributorsContributions("facebook", "react")

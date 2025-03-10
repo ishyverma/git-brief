@@ -4,9 +4,9 @@ import { createTRPCRouter, privateProcedure } from "@/server/api/trpc";
 import { createSummary, pollCommit } from "@/lib/github-repo-loader";
 import axios from "axios";
 import getColors from "@/lib/get-colors";
-import { getRepoStats } from "@/lib/get-info";
 import { contributorsRouter } from "./contributors";
 import { dependencyRouter } from "./dependency";
+import { langPoller } from "@/lib/git-chat";
 
 export const projectRouter = createTRPCRouter({
   getProjects: privateProcedure.query(async ({ ctx }) => {
@@ -50,9 +50,8 @@ export const projectRouter = createTRPCRouter({
           description,
         } = response.data;
 
-        const [colors, repoInfo] = await Promise.all([
+        const [colors] = await Promise.all([
           getColors(owner, name),
-          getRepoStats(owner, name),
         ]);
 
         const repo = await ctx.db.repo.create({
@@ -66,14 +65,10 @@ export const projectRouter = createTRPCRouter({
             stars,
             repoImage: githubImage,
             description,
-            totalCommits: repoInfo.commits,
-            totalContributors: repoInfo.contributors,
-            totalPrs: repoInfo.prs,
-            totalMergedPrs: repoInfo.merged,
           },
         });
 
-        const [contributorCaller, dependencyCaller] = await Promise.all([
+        const [contributorCaller, dependencyCaller, repoLoader] = await Promise.all([
           contributorsRouter.createCaller(ctx).createContributors({
             repoId: repo.id,
             name: name,
@@ -84,6 +79,7 @@ export const projectRouter = createTRPCRouter({
             repo: name,
             repoId: repo.id,
           }),
+          langPoller(owner, name, repo.id)
         ]);
 
         const filteredLanguage = colors.map((color) => ({
@@ -133,25 +129,6 @@ export const projectRouter = createTRPCRouter({
       return await ctx.db.commit.findMany({
         where: {
           repoId: input.projectId,
-        },
-      });
-    }),
-  getContributorsInfo: privateProcedure
-    .input(
-      z.object({
-        projectId: z.string(),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      return await ctx.db.repo.findFirst({
-        where: {
-          id: input.projectId,
-        },
-        select: {
-          totalCommits: true,
-          totalContributors: true,
-          totalMergedPrs: true,
-          totalPrs: true,
         },
       });
     }),

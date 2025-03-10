@@ -6,15 +6,25 @@ import { GitFork, Star } from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RepoSummary from "@/components/main/repo-summary";
-import ActivityCard from "@/components/main/activity-card";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion } from "framer-motion";
 import InsightsCard from "@/components/main/insights-card";
+import { Logo } from "@/components/logo/logo";
+import CodeGPT from "@/components/main/code-gpt";
 
 function Dashboard() {
   const { projectId, project } = useProject();
 
   if (!project) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex h-[100vh] w-[100vw] flex-col items-center justify-center">
+        <div className="animate-spin">
+          <Logo />
+        </div>
+        <p className="mt-4 text-xl font-semibold tracking-tight text-[#3F3F45]">
+          Almost There...
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -43,22 +53,45 @@ function Dashboard() {
             <TabsList>
               <TabsTrigger value="summary">Summary</TabsTrigger>
               <TabsTrigger value="commits">Commits</TabsTrigger>
-              <TabsTrigger value="code">Code</TabsTrigger>
-              <TabsTrigger value="issues">Issues</TabsTrigger>
-              <TabsTrigger value="pull_requests">Pull Requests</TabsTrigger>
             </TabsList>
           </div>
-          <TabsContent value="commits">
-            <Summary repoId={projectId} />
-          </TabsContent>
           <TabsContent value="summary">
-            <div className="flex items-center justify-between gap-4">
-              <RepoSummary repoId={projectId} />
-              <ActivityCard repoId={projectId} />
-            </div>
-            <div className="mt-4 w-full max-h-fit">
-              <InsightsCard repoId={projectId} />
-            </div>
+            <AnimatePresence>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.3, staggerChildren: 0.1 }}
+              >
+                <motion.div>
+                  <div className="flex items-center justify-between gap-4">
+                    <RepoSummary repoId={projectId} />
+                  </div>
+                </motion.div>
+                <motion.div>
+                  <div className="mt-4 max-h-fit w-full">
+                    <InsightsCard repoId={projectId} />
+                  </div>
+                </motion.div>
+              </motion.div>
+            </AnimatePresence>
+          </TabsContent>
+          <TabsContent value="commits">
+            <AnimatePresence>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.3, staggerChildren: 0.1 }}
+              >
+                <motion.div>
+                  <Summary repoId={projectId} />
+                </motion.div>
+              </motion.div>
+            </AnimatePresence>
+          </TabsContent>
+          <TabsContent value="code">
+            <CodeGPT repoId={projectId} />
           </TabsContent>
         </Tabs>
       </div>

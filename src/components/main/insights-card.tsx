@@ -10,7 +10,7 @@ type Props = {
 
 const InsightsCard = ({ repoId }: Props) => {
   return (
-    <div className="flex flex-col rounded-md border p-5">
+    <div className="flex flex-col rounded-md border w-full p-5">
       <p className="text-xl font-semibold tracking-tight text-[#3F3F44] flex items-center gap-2">
         <Brain className="w-5 h-5" /> Repository Insights
       </p>
@@ -22,7 +22,7 @@ const InsightsCard = ({ repoId }: Props) => {
         <TabsContent value="contributors" className="flex-1">
           <ContributorsCard repoId={repoId} />
         </TabsContent>
-        <TabsContent value="dependencies">
+        <TabsContent value="dependencies" className="w-full">
             <DependenciesCard repoId={repoId} />
         </TabsContent>
       </Tabs>

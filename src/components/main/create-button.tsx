@@ -75,7 +75,9 @@ function CreateButton({ id }: Props) {
   return (
     <Dialog>
       <DialogTrigger>
-        <Plus /> Create
+        <div className="flex items-center gap-2 mt-2 border border-gray-300 rounded px-3 py-1 cursor-pointer hover:bg-gray-100">
+          <Plus className="w-4 h-4" /> Create
+        </div>
       </DialogTrigger>
       <DialogContent className="w-full max-w-md bg-white p-6 dark:bg-zinc-900">
         <DialogHeader>

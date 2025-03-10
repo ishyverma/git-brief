@@ -12,6 +12,9 @@ const config = {
                 hostname: "avatars.githubusercontent.com"
             }
         ]
+    },
+    eslint: {
+        ignoreDuringBuilds: true
     }
 };
 

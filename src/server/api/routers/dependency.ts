@@ -20,5 +20,12 @@ export const dependencyRouter = createTRPCRouter({
         return await ctx.db.dependency.createMany({
             data: filteredData
         })
+    }),
+    getDependency: privateProcedure.input(z.object({ repoId: z.string() })).query(async ({ ctx, input }) => {
+        return await ctx.db.dependency.findMany({
+            where: {
+                repoId: input.repoId
+            }
+        }) 
     })
 })

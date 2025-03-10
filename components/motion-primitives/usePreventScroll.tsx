@@ -156,7 +156,7 @@ function preventScrollMobileSafari() {
       return;
     }
 
-    lastY = e.changedTouches[0].pageY;
+    lastY = e.changedTouches[0]?.pageY ?? 0; 
   };
 
   let onTouchMove = (e: TouchEvent) => {
@@ -174,7 +174,7 @@ function preventScrollMobileSafari() {
     // of a nested scrollable area, otherwise mobile Safari will start scrolling
     // the window instead. Unfortunately, this disables bounce scrolling when at
     // the top but it's the best we can do.
-    let y = e.changedTouches[0].pageY;
+    let y = e.changedTouches[0]?.pageY ?? 0;
     let scrollTop = scrollable.scrollTop;
     let bottom = scrollable.scrollHeight - scrollable.clientHeight;
 

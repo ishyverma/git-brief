@@ -3,6 +3,7 @@ import { Code } from "lucide-react";
 import React from "react";
 import { motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "../ui/skeleton";
 
 type Props = {
   repoId: string;
@@ -12,13 +13,13 @@ const RepoSummary = ({ repoId }: Props) => {
   const { data } = api.repo.getRepoSummary.useQuery({ repoId });
 
   if (!data) {
-    return <div>Loading...</div>;
+    return <Skeleton className="mt-4 h-[250px] w-full rounded-md border p-5" />;
   }
 
   const sumOfLines = data.reduce((a, b) => a + b.numberOfLines, 0);
 
   return (
-    <div className="mt-4 w-full h-[250px] rounded-md border p-5">
+    <div className="mt-4 h-[250px] w-full rounded-md border p-5">
       <p className="flex items-center gap-2 text-xl font-semibold tracking-tight text-[#3F3F44]">
         <Code className="h-5 w-5" /> Repository Overview
       </p>
@@ -26,8 +27,8 @@ const RepoSummary = ({ repoId }: Props) => {
         {data.slice(0, 2).map((language) => (
           <div key={language.id}>
             <div className="flex items-center justify-between">
-              <span className="text-zinc-600 text-sm">{language.name}</span>
-              <span className="text-zinc-600 text-sm">
+              <span className="text-sm text-zinc-600">{language.name}</span>
+              <span className="text-sm text-zinc-600">
                 {((language.numberOfLines / sumOfLines) * 100).toFixed(1)} %
               </span>
             </div>
@@ -52,16 +53,22 @@ const RepoSummary = ({ repoId }: Props) => {
       </div>
       <div className="mt-5">
         <div className="flex items-center justify-between">
-              <span className="text-zinc-600 text-sm">Others</span>
-              <span className="text-zinc-600 text-sm">
-                {(data.slice(3).reduce((a, b) => a + b.numberOfLines, 0)/sumOfLines * 100).toFixed(1)} %
-              </span>
-            </div>
+          <span className="text-sm text-zinc-600">Others</span>
+          <span className="text-sm text-zinc-600">
+            {(
+              (data.slice(3).reduce((a, b) => a + b.numberOfLines, 0) /
+                sumOfLines) *
+              100
+            ).toFixed(2)}{" "}
+            %
+          </span>
+        </div>
         <div className="h-2 w-full rounded-xl bg-neutral-200">
           <div
             className={`h-2 rounded-xl`}
             style={{
               backgroundColor: `#2463EB`,
+              width: `${(data.slice(3).reduce((a, b) => a + b.numberOfLines, 0) / sumOfLines) * 100}%`
             }}
           />
         </div>

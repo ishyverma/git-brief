@@ -5,6 +5,7 @@ import SummaryCard from "./summary-card";
 import { Input } from "../ui/input";
 import { useState } from "react";
 import { delay, motion } from "motion/react";
+import { Skeleton } from "../ui/skeleton";
 
 interface SummaryCardProps {
   repoId: string;
@@ -30,8 +31,18 @@ const cardVariants = {
 };
 
 const Summary = ({ repoId }: SummaryCardProps) => {
-  const { data } = api.project.getCommits.useQuery({ projectId: repoId });
+  const { data, isLoading } = api.project.getCommits.useQuery({ projectId: repoId });
   const [value, setValue] = useState("");
+
+  if (isLoading) {
+    return <>
+      <Skeleton className="my-2 flex flex-col items-center justify-center" />
+      <Skeleton className="my-2 flex flex-col items-center justify-center" />
+      <Skeleton className="my-2 flex flex-col items-center justify-center" />
+      <Skeleton className="my-2 flex flex-col items-center justify-center" />
+      <Skeleton className="my-2 flex flex-col items-center justify-center" />
+    </>
+  }
 
   return (
     <div className="my-2 flex flex-col items-center justify-center">

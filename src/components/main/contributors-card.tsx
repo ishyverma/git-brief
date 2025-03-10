@@ -2,6 +2,7 @@ import { api } from "@/trpc/react";
 import Image from "next/image";
 import React from "react";
 import { motion } from "motion/react";
+import { Skeleton } from "../ui/skeleton";
 
 type Props = {
   repoId: string;
@@ -11,7 +12,10 @@ const ContributorsCard = ({ repoId }: Props) => {
   const { data } = api.contributor.getContributors.useQuery({ repoId });
 
   if (!data) {
-    return <div>Loading...</div>;
+    return <div className="mt-4 grid grid-cols-2 justify-between gap-4">
+      <Skeleton className="h-[100px] w-full" />
+      <Skeleton className="h-[100px] w-full" />
+    </div>
   }
 
   return (

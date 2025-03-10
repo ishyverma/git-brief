@@ -22,7 +22,6 @@ import {
   GitCommitHorizontal,
   GitPullRequest,
   LayoutDashboard,
-  Plus,
   Zap,
 } from "lucide-react";
 import Link from "next/link";
@@ -54,27 +53,7 @@ const items: itemsType[] = [
     title: "Code Analysis",
     link: "/code-analysis",
     icon: <Code />,
-  },
-  {
-    title: "Commit Analysis",
-    link: "/commit-analysis",
-    icon: <GitCommitHorizontal />,
-  },
-  {
-    title: "Predictive Insights",
-    link: "/insights",
-    icon: <Brain />,
-  },
-  {
-    title: "Docker Insights",
-    link: "/docker",
-    icon: <Zap />,
-  },
-  {
-    title: "Pull Requests",
-    link: "/pull-requests",
-    icon: <GitPullRequest />,
-  },
+  }
 ];
 
 const repos: repoType[] = [
@@ -98,7 +77,7 @@ const AppSidebar = ({ info: { fullName, email, id } }: Props) => {
   const { data, project, projectId, setProjectId } = useProject();
   const refetch = useRefetch();
 
-  if(!data) {
+  if (!data) {
     return null;
   }
 
@@ -147,10 +126,14 @@ const AppSidebar = ({ info: { fullName, email, id } }: Props) => {
                     asChild
                   >
                     <div>
-                      <div className={cn(
-                        "rounded bg-white px-[6px] py-[2px] text-sm font-medium text-black",
-                        project?.id === repo.id ? "bg-[#3B9FF6] text-white" : "border"
-                      )}>
+                      <div
+                        className={cn(
+                          "rounded bg-white px-[6px] py-[2px] text-sm font-medium text-black",
+                          project?.id === repo.id
+                            ? "bg-[#3B9FF6] text-white"
+                            : "border",
+                        )}
+                      >
                         {repo.name[0]?.toUpperCase()}
                       </div>
                       <div className="font-medium">{repo.name}</div>
@@ -159,7 +142,7 @@ const AppSidebar = ({ info: { fullName, email, id } }: Props) => {
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
-          <CreateButton id={id} />
+            <CreateButton id={id} />
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
